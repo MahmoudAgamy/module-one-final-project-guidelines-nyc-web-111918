@@ -6,3 +6,4 @@ gem "sqlite3"
 gem "pry"
 gem 'rest-client'
 gem "require_all"
+gem 'roo', "~> 2.7.0"

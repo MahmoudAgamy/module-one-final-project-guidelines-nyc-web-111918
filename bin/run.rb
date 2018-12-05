@@ -9,42 +9,28 @@ require_relative '../lib/airport.rb'
 require 'rest-client'
 require 'json'
 require 'pry'
+require 'roo'
 
-#def data
-#  response_string = RestClient.get('https://airhob-api.p.mashape.com/sandboxapi/flights/v1.1/search')
-#  results = JSON.parse(response_string)
-#  puts results
-#end
-#data
 
-# binding.pry
-# def welcome
-#   puts "Welcome to weFly."
-#   puts "Are you looking for a city or flight? Please enter 'c' for city, or 'f' for flight."
-#   get_user_input
-# end
-#
-# def get_user_input
-#   binding.pry
-#   #gets c or f from user
-#   #input = gets.chomp
-#   if input.to_s != "c" || input.to_s != "f"
-#     p "Please enter 'c' for city, or 'f' for flight."
-#   #elsif input.to_s == "c"
-#     #p "Please enter the name of the city you are flying to:"
-#     #city = gets.chomp
-#     #puts city.to_s
-#     #User.first
-#   #elsif input.to_s == "f"
-#     #puts "Please enter the flight number:"
-#     #flight = gets.chomp
-#     #puts flight.to_s
-#     #Flight.first
-#   end
-#   #will pass this as an argument for our next method: enter the city or flight name
-#
+# xlsx = Roo::Excelx.new(File.expand_path('./bin/flights-app.xlsx'))
+# # puts xlsx
+# xlsx.each_row_streaming(offset: 1) do |row|
+#   Flight.find_or_create_by(
+#     airport: row[0],
+#     airline: row[1],
+#     duration: row[2],
+#     flight_number: row[3]
+#   )
 # end
 
-welcome
-get_user_input
+# xlsx = Roo::Excelx.new(File.expand_path('./bin/airportcodes.xlsx'))
+# xlsx.each_row_streaming(offset: 1) do |row|
+#   AirportCode.find_or_create_by(
+#     city: row[0].value,
+#     airportcode: row[1].value
+#   )
+# end
+
+# welcome
+# get_user_input
 puts "HELLO WORLD"
