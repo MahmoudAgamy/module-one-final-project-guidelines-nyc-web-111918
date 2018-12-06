@@ -10,5 +10,6 @@ gem 'roo', "~> 2.7.0"
 gem 'email_validator'
 gem 'table_print', '~> 1.5', '>= 1.5.6'
 gem 'artii'
+gem 'colorize'
 # gem 'rmagick', '2.16.0'
 # gem 'catpix', '~> 0.2.0'

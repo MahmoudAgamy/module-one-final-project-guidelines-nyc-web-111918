@@ -11,6 +11,7 @@ require 'json'
 require 'pry'
 require 'roo'
 require 'artii'
+require 'colorize'
 
 
 #imports excel file data to :flights table
