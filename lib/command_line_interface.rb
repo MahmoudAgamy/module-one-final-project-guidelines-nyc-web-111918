@@ -6,7 +6,6 @@ def welcome
   puts ""
   puts b.asciify('           Fly')
 
-
   puts "\n \n Welcome to weFly."
   puts "\n Please enter your email address:"
   login
@@ -21,9 +20,11 @@ def login
 
   found_user = User.all.find_by(email: user_email)
   current = nil
+  sleep(1)
   if !!found_user
     puts "Welcome back, #{found_user.name}!"
     puts "Here are your current reservations."
+    sleep(2)
     user_reservations = Reservation.all.select do |current_user|
       current_user.user_id == found_user.id
     end #ends for selecting user's reservations
@@ -46,7 +47,7 @@ def login
       #each_loop(user_reservations)
       #insert new method here for user to choose 1 option from user_reservations
     elsif user_reservations.length == 0
-      p "You do not have any current reservations."
+    puts "You do not have any current reservations."
     end
 
 
@@ -72,6 +73,7 @@ def choose_options(current)
   elsif input == "no"
     # we need the name to display the reservation
     puts "Okay, we'll see you next time."
+    ################### instead of bye
   elsif input == "yes"
     get_user_input(current)
   end
@@ -89,18 +91,18 @@ def get_user_input(current)
 
     if found_options.length == 0
       puts "Sorry, weFly does not travel to that location."
-      get_user_input
+      get_user_input(current)
     else
     i = 1
     serialed_option = found_options.map do |res|
-      res.update(time: "#{rand(12...24)}:#{rand(0..59)}")
+      res.update(time: "#{rand(12...24)}:#{rand(10..59)}")
       res.update(price: rand(200..900))
       res.update(option: i)
       i += 1
       res
     end
   end
-
+  sleep(2)
   puts ""
   tp serialed_option, "option", "airline", "flight_number", "origin", "destination", "airport", "price", "time"
    puts ""
@@ -114,7 +116,14 @@ def make_reservation(serialed_option, current)
   choice = gets.chomp.to_i
   if choice.between?(1, serialed_option.length)#!!serialed_option[choice.to_i - 1] &&
     Reservation.create(user_id: current.id, flight_id: serialed_option[choice.to_i - 1].id)
-    puts "Reservation confirmed! Congratulations. We look forward to flying with you."
+    sleep(2)
+    puts "Reservation confirmed! Congratulations. Please see your ticket below."
+    puts ""
+    tp serialed_option[choice.to_i - 1], "airline", "flight_number", "origin", "destination", "airport", "price", "time"
+    puts ""
+    sleep(1)
+    puts "We look forward to flying with you."
+    sleep(1)
     puts "Would you like to book another flight? Please enter 'yes' or 'no':"
     another = gets.chomp
     if another != "yes" && another != "no"
@@ -128,8 +137,6 @@ def make_reservation(serialed_option, current)
     make_reservation(serialed_option, current)
   end
 end
-
-
 
 
   ######################### HELPER METHODS #####################
@@ -153,3 +160,8 @@ end
   # end
   # puts "------------------------------------------------------------"
 #end
+
+
+# puts ""
+# tp user_flight, "airline", "flight_number", "origin", "destination", "airport"
+# puts ""
