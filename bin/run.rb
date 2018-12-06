@@ -46,6 +46,13 @@ require 'artii'
 #   end
 # end
 
+
+# Flight.all.map do |res|
+#   res.update(time: "#{rand(12...24)}:#{rand(10..59)}")
+#   res.update(price: rand(200..900))
+#   res
+# end
+
 welcome
 # get_user_input
-puts "HELLO WORLD"
+puts "Thank you for using weFly." #add an airplane
