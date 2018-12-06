@@ -10,8 +10,10 @@ require 'rest-client'
 require 'json'
 require 'pry'
 require 'roo'
+require 'artii'
 
 
+#imports excel file data to :flights table
 # xlsx = Roo::Excelx.new(File.expand_path('./bin/flights-app.xlsx'))
 # # puts xlsx
 # xlsx.each_row_streaming(offset: 1) do |row|
@@ -23,7 +25,9 @@ require 'roo'
 #   )
 # end
 
-# xlsx = Roo::Excelx.new(File.expand_path('./bin/airportcodes.xlsx'))
+
+#imports excel file data to :airportcodes
+# xlsx = Roo::Excelx.new(File.expand_path('./bin/airport-codes.xlsx'))
 # xlsx.each_row_streaming(offset: 1) do |row|
 #   AirportCode.find_or_create_by(
 #     city: row[0].value,
@@ -31,6 +35,17 @@ require 'roo'
 #   )
 # end
 
-# welcome
+
+# Flight.all.each do |f|
+#   found = AirportCode.all.find do |ac|
+#     ac.airportcode == f.airport
+#   end
+#   # binding.pry
+#   if !!found
+#     f.update_column(:city, found.city)
+#   end
+# end
+
+welcome
 # get_user_input
 puts "HELLO WORLD"
