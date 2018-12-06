@@ -77,7 +77,8 @@ def make_reservation(serialed_option, current)
   puts "  BACK - to enter a different destination.".colorize(:magenta)
   puts "  MENU - to go back to the main menu.".colorize(:magenta)
   choice = gets.chomp
-  if choice.to_i.between?(1, serialed_option.length) #!!serialed_option[choice.to_i - 1] &&
+  lengthy = serialed_option.length
+  if choice.to_i.between?(1, lengthy)
     Reservation.create(user_id: current.id, flight_id: serialed_option[choice.to_i - 1].id)
     sleep(1)
 
@@ -93,7 +94,7 @@ def make_reservation(serialed_option, current)
     another = gets.chomp
     if another != "yes" && another != "no"
     elsif another == "yes"
-      booking
+      booking(current)
     elsif another == "no"
       puts "\nThank you for booking with weFly.\n".colorize(:cyan)
       main_menu(current)
@@ -147,21 +148,35 @@ def keyword_response(keyword, current)
     puts ""
     main_menu(current)
   when "UPDATE"
+    tp current, "name", "email", "phone"
+    puts ""
     puts "\nWhat would you like to update?\n".colorize(:cyan)
     puts "  EMAIL  - to update your email".colorize(:magenta)
     puts "  PHONE  - to update your phone number".colorize(:magenta)
     puts "  MENU   - to return to the main menu\n".colorize(:magenta)
 
-    tp current, "name", "email", "phone"
     column = gets.chomp.downcase
 
     if column == "email"
+      puts "Please enter your new email address:\n"
       new_email = gets.chomp.downcase
+      if !email_validator(new_email)
+        puts "\nPlease enter a valid email address.\n".colorize(:cyan)
+        puts "Please enter your new email address:\n"
+        new_email = gets.chomp.downcase
+      end
       current.update(email: new_email)
+      sleep(1)
+      puts "Your email address has been updated."
+
+
     elsif column == "phone"
+      puts "Please enter your new phone number:\n"
       new_phone = gets.chomp
       #make sure it includes NUMBERS
       current.update(phone: new_phone)
+      sleep(1)
+      puts "Your phone number has been updated."
     elsif column == "menu"
       main_menu(current)
     else
@@ -169,7 +184,7 @@ def keyword_response(keyword, current)
       keyword_response("update", current)
 
     end
-    current.update()
+    tp current, "name", "email", "phone\n"
     #contains @ - update email
     #contains integers - update phone number
     #else update name
@@ -227,11 +242,11 @@ def booking(current)
       puts "\nSorry, weFly does not travel to that location.\n".colorize(:cyan)
       booking(current)
     else
-    i = 1
-    serialed_option = found_options.map do |res|
-      res.update(option: i)
-      i += 1
-      res
+      i = 1
+      serialed_option = found_options.map do |res|
+        res.update(option: i)
+        i += 1
+        res
     end
   end
   sleep(1)

@@ -57,3 +57,8 @@ require 'colorize'
 welcome
 # get_user_input
 puts "Thank you for using weFly." #add an airplane
+
+puts ""
+puts a.asciify('     we')
+puts ""
+puts b.asciify('           Fly').colorize(:cyan)
