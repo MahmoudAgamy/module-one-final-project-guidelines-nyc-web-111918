@@ -1,4 +1,5 @@
 def welcome
+  puts `clear`
   a = Artii::Base.new :font => 'alligator2'
   b = Artii::Base.new :font => 'alligator'
   puts ""
@@ -25,6 +26,7 @@ def login
   sleep(1)
 #beginning of found user
   if !!found_user
+      puts `clear`
       puts "\nWelcome back, #{found_user.name}!\n".colorize(:cyan)
       sleep 0.5
       puts "\nHere are your current reservations.\n".colorize(:cyan)
@@ -73,11 +75,11 @@ end # end of logiN
 
 
 
-
 def make_reservation(serialed_option, current)
 
   choice = gets.chomp.downcase
   lengthy = serialed_option.length
+  puts `clear`
   if choice.to_i.between?(1, lengthy)
     Reservation.create(user_id: current.id, flight_id: serialed_option[choice.to_i - 1].id)
     sleep(1)
@@ -139,6 +141,7 @@ end
 
 
 def keyword_response(keyword, current)
+  puts `clear`
   case keyword
   when "book"
     booking(current)
@@ -204,6 +207,8 @@ def keyword_response(keyword, current)
     puts ""
     tp current.flights.last,  "airline", "flight_number", "origin", "destination", "airport"
     puts ""
+    canceled = gets.chomp.downcase
+
     def cancellation(canceled, current)
           if canceled == "yes"
             #user_email = current.email
@@ -224,6 +229,7 @@ def keyword_response(keyword, current)
             main_menu(current)
           elsif canceled == "no"
            puts "returning to main menu".colorize(:cyan)
+
            main_menu(current)
 
          else
@@ -239,6 +245,7 @@ def keyword_response(keyword, current)
 
 
   when "exit"
+    puts `clear`
     a = Artii::Base.new :font => 'alligator2'
     b = Artii::Base.new :font => 'alligator'
     puts ""
