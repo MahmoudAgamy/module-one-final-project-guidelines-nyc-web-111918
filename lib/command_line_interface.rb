@@ -4,10 +4,11 @@ def welcome
   puts ""
   puts a.asciify('     we')
   puts ""
-  puts b.asciify('           Fly').colorize(:cyan)
+  puts b.asciify('           Fly    ').colorize(:cyan)
 
   puts "\n \n Welcome to weFly.".colorize(:cyan)
-  sleep 1
+  loading
+  puts ""
   puts "\n Please enter your email address:\n".colorize(:cyan)
   login
 end
@@ -74,14 +75,15 @@ end # end of logiN
 
 
 def make_reservation(serialed_option, current)
-  puts "  BACK - to enter a different destination.".colorize(:magenta)
-  puts "  MENU - to go back to the main menu.".colorize(:magenta)
-  choice = gets.chomp
+
+  choice = gets.chomp.downcase
   lengthy = serialed_option.length
   if choice.to_i.between?(1, lengthy)
     Reservation.create(user_id: current.id, flight_id: serialed_option[choice.to_i - 1].id)
     sleep(1)
-
+    puts "\nBooking your reservation"
+    loading
+    puts ""
     puts "\nCongratulations! Your reservation is confirmed.\n".colorize(:cyan)
     puts "Ticket purchased using the card on file ending in #{rand(1000..9999)}.\n".colorize(:cyan)
     puts ""
@@ -91,14 +93,12 @@ def make_reservation(serialed_option, current)
     puts "\nWe look forward to flying with you.\n".colorize(:cyan)
     sleep(1)
     puts "\nWould you like to book another flight? Please enter 'yes' or 'no':\n".colorize(:cyan)
-    another = gets.chomp
-    if another != "yes" && another != "no"
-    elsif another == "yes"
-      booking(current)
-    elsif another == "no"
-      puts "\nThank you for booking with weFly.\n".colorize(:cyan)
-      main_menu(current)
-    end
+    another = gets.chomp.downcase
+    anotherr(another, current)
+
+
+
+
   elsif choice == "back"
     booking(current)
   elsif choice == "menu"
@@ -132,7 +132,7 @@ end
     puts "  EXIT   - to end your current session with weFly".colorize(:magenta)
     puts ""
 
-    keyword = gets.chomp.upcase
+    keyword = gets.chomp.downcase
     sleep(1)
     keyword_response(keyword, current)
   end
@@ -140,14 +140,16 @@ end
 
 def keyword_response(keyword, current)
   case keyword
-  when "BOOK"
+  when "book"
     booking(current)
-  when "VIEW"
+  when "view"
     puts ""
+    found_user = User.all.find_by(email: current.email)
+    current = found_user #LASTUPDATE
     tp current.flights, "airline", "flight_number", "origin", "destination", "airport"
     puts ""
     main_menu(current)
-  when "UPDATE"
+  when "update"
     tp current, "name", "email", "phone"
     puts ""
     puts "\nWhat would you like to update?\n".colorize(:cyan)
@@ -167,8 +169,8 @@ def keyword_response(keyword, current)
       end
       current.update(email: new_email)
       sleep(1)
-      puts "Your email address has been updated."
-
+      puts "Your email address has been updated.\n"
+      main_menu(current)
 
     elsif column == "phone"
       puts "Please enter your new phone number:\n"
@@ -176,53 +178,80 @@ def keyword_response(keyword, current)
       #make sure it includes NUMBERS
       current.update(phone: new_phone)
       sleep(1)
-      puts "Your phone number has been updated."
+      puts "\nYour phone number has been updated.\n"
+      tp current, "name", "email", "phone"
+      puts ""
+      main_menu(current)
+      puts ""
     elsif column == "menu"
       main_menu(current)
     else
-      puts "Please enter a valid response".colorize(:cyan)
+      puts "\nPlease enter a valid response".colorize(:cyan)
       keyword_response("update", current)
 
     end
-    tp current, "name", "email", "phone\n"
+    tp current, "name", "email", "phone"
     #contains @ - update email
     #contains integers - update phone number
     #else update name
 
 
 
-  when "CANCEL"
+  when "cancel"
     puts ""
     puts "Are you sure you want to cancel your last flight? (displayed below)".colorize(:cyan)
     puts "'yes' or 'no'".colorize(:cyan)
     puts ""
     tp current.flights.last,  "airline", "flight_number", "origin", "destination", "airport"
     puts ""
-    canceled = gets.chomp.downcase
-      if canceled == "yes"
-        #user_email = current.email
-        found_user = User.all.find_by(email: current.email)
-        current = found_user
-        current.reservations.last.destroy
-        puts "Canceling your last reservation" + "#{loading}"
-        sleep(1)
-        puts "You have successfully canceled your last flight.".colorize(:cyan)
-        puts "Your card will be refunded in the next 3-5 business days.".colorize(:cyan)
-        puts "Below is your updated current reservation history.".colorize(:cyan)
-        puts ""
-        tp current.flights, "airline", "flight_number", "origin", "destination", "airport"
-        puts ""
+    def cancellation(canceled, current)
+          if canceled == "yes"
+            #user_email = current.email
+            found_user = User.all.find_by(email: current.email)
+            current = found_user
+            current.reservations.last.destroy
+            puts "\nCanceling your last reservation"
+            loading
+            puts ""
 
-        main_menu(current)
-      elsif canceled == "no"
-       puts "returning to main menu".colorize(:cyan)
-       main_menu(current)
+            puts "\nYou have successfully canceled your last flight.".colorize(:cyan)
+            puts "\nYour card will be refunded in the next 3-5 business days.".colorize(:cyan)
+            puts "\nBelow is your updated current reservation history.".colorize(:cyan)
+            puts ""
+            tp current.flights, "airline", "flight_number", "origin", "destination", "airport"
+            puts ""
+
+            main_menu(current)
+          elsif canceled == "no"
+           puts "returning to main menu".colorize(:cyan)
+           main_menu(current)
+
+         else
+           puts "Please enter a valid response."
+          canceled = gets.chomp.downcase
+          cancellation(canceled, current)
+          end
       end
-  when "EXIT"
-    abort("Leaving weFly.".colorize(:cyan))
+
+    canceled = gets.chomp.downcase
+    cancellation(canceled, current)
+
+
+
+  when "exit"
+    a = Artii::Base.new :font => 'alligator2'
+    b = Artii::Base.new :font => 'alligator'
+    puts ""
+    puts a.asciify('     we')
+    puts ""
+    puts b.asciify('           Fly').colorize(:cyan)
+    puts ""
+    loading
+    puts ""
+    abort("Thank you for using weFly.".colorize(:cyan))
   else
     puts "Please enter a valid response".colorize(:cyan)
-    keyword = gets.chomp.upcase
+    keyword = gets.chomp.downcase
     sleep(1)
     keyword_response(keyword, current)
   end
@@ -250,21 +279,40 @@ def booking(current)
     end
   end
   sleep(1)
+
+
   puts ""
   tp serialed_option, "option", "airline", "flight_number", "origin", "destination", "airport", "price", "time"
    puts ""
   #each_loop(found_options)
-  puts "Above are the options for flights to that location.\n".colorize(:cyan)
-  puts "\nPlease indicate the option number of the flight you want to book:\n".colorize(:cyan)
+  puts "\nAbove are the options for flights to that location.\n".colorize(:cyan)
+  puts "  BACK - to enter a different destination.".colorize(:magenta)
+  puts "  MENU - to go back to the main menu.".colorize(:magenta)
+  puts "\nPlease indicate the OPTION NUMBER of the flight you would like to book:\n".colorize(:magenta)
+
   make_reservation(serialed_option, current)
 
 end
 
-
-def loading
-  5.times do
-  sleep 0.5
-  print "."
+def anotherr(another, current)
+  if another != "yes" && another != "no"
+    puts "\nChoice Not Valid, please try again\n".colorize(:cyan)
+    puts "\nWould you like to book another flight? Please enter 'yes' or 'no':\n".colorize(:cyan)
+    another = gets.chomp.downcase
+    anotherr(another, current)
+  elsif another == "yes"
+    booking(current)
+  elsif another == "no"
+    puts "\nThank you for booking with weFly.\n".colorize(:cyan)
+    main_menu(current)
   end
 
+end
+
+def loading
+  10.times do
+  sleep 0.3
+  print "  ✈️  "
+  end
+  ""
 end
